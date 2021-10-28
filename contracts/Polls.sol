@@ -1,4 +1,6 @@
-pragma solidity ^0.5.12;
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.4;
 
 contract Polls {
     struct Poll {
@@ -20,12 +22,13 @@ contract Polls {
     mapping(address => bytes32) ownerNames;
 
     function createPoll(bytes32 title, string memory question, bytes32 ownerName) public returns (uint index) {
-        Poll memory p;
+        uint256 idx = polls.length;
+        polls.push();
+        Poll storage p = polls[idx];
         p.title = title;
         p.question = question;
         p.index = pollCount;
         p.owner = msg.sender;
-        polls.push(p);
         pollCount++;
         ownerNames[msg.sender] = ownerName;
         emit pollModified(p.owner, p.index);
