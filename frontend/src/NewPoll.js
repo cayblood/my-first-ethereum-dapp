@@ -3,7 +3,7 @@ import { PlusCircleIcon } from "@heroicons/react/solid";
 import { useNotifications } from "@usedapp/core";
 import { useCreatePoll } from './hooks';
 
-function NewPoll(props) {
+function NewPoll() {
   const [poll, setPoll] = useState({
     title: "",
     question: "",
@@ -12,25 +12,27 @@ function NewPoll(props) {
   const addOption = () => {
     setPoll({...poll, options: [...poll.options, ""]})
   };
-  const { createPoll, pollState } = useCreatePoll();
+  const { createPoll, createPollStatus, addOptionStatus } = useCreatePoll();
   const { notifications } = useNotifications();
   const submit = (e) => {
     e.preventDefault();
     const name = sessionStorage.getItem('name') || 'Jane Doe';
-    console.log(poll.title, poll.question, name);
-    return createPoll(poll.title, poll.question, name);
+    return createPoll(poll.title, poll.question, name, poll.options);
   };
 
   useEffect(() => {
     if (notifications.filter(
       (notification) =>
         notification.type === "transactionSucceed" &&
-        notification.transactionName === 'Create Poll'
-      )
-    ) {
-      console.log('Created!');
+        notification.transactionName === 'Create poll'
+      ).length > 0) {
+      poll.title = '';
+      poll.question = '';
+      poll.options = [''];
     }
-  }, [notifications]);
+  }, [notifications, poll]);
+
+  const isMining = createPollStatus.status === 'Mining' || addOptionStatus.status === 'Mining';
 
   return (
     <div className="py-8 col-span-1 flex shadow-sm rounded-md">
@@ -108,9 +110,17 @@ function NewPoll(props) {
 
         <div className="pt-5">
           <div className="flex justify-end">
+            {isMining &&
+              <div className="flex items-center justify-center space-x-2 animate-pulse">
+                <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
+                <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
+                <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
+              </div>
+            }
             <button
               type="submit"
               className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={isMining}
             >
               Add
             </button>

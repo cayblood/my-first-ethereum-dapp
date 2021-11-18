@@ -89,11 +89,11 @@ npm install @tailwindcss/forms
 
 First run a local ethereum network simulator with hardhat.
 ```shell
-npx hardnet node
+npx hardhat node
 ```
 Then, in a separate terminal, deploy the contract to your local network.
 ```shell
-node scripts/deploy-polls.js
+npx hardhat run scripts/deploy-polls.js --network localhost
 ```
 You should see output that looks something like:
 ```text

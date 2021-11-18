@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# ignore Polls.json, which is generated upon contract deployment
+src/Polls.json

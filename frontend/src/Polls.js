@@ -1,50 +1,45 @@
 import React from "react";
-import {DotsVerticalIcon} from "@heroicons/react/solid";
+import { usePolls } from './hooks';
 
-export class Polls extends React.Component {
-  classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-  }
+function Polls() {
+  const { polls } = usePolls();
+  const nameToInitials = (name) => {
+    const rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
+    let initials = [...name.matchAll(rgx)] || [];
+    initials = (
+      (initials.shift()?.[1] || '') + (initials.pop()?.[1] || '')
+    ).toUpperCase();
+    return initials;
+  };
 
-  render() {
-    const projects = [
-      { name: 'Graph API', initials: 'GA', href: '#', members: 16, bgColor: 'bg-pink-600' },
-      { name: 'Component Design', initials: 'CD', href: '#', members: 12, bgColor: 'bg-purple-600' },
-      { name: 'Templates', initials: 'T', href: '#', members: 16, bgColor: 'bg-yellow-500' },
-      { name: 'React Components', initials: 'RC', href: '#', members: 8, bgColor: 'bg-green-500' },
-    ]
-    return (
-      <ul className="mt-3 grid grid-cols-1 gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {projects.map((project) => (
-          <li key={project.name} className="col-span-1 flex shadow-sm rounded-md">
-            <div
-              className={this.classNames(
-                project.bgColor,
-                'flex-shrink-0 flex items-center justify-center w-16 text-white text-sm font-medium rounded-l-md'
-              )}
-            >
-              {project.initials}
-            </div>
-            <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
-              <div className="flex-1 px-4 py-2 text-sm truncate">
-                <a href={project.href} className="text-gray-900 font-medium hover:text-gray-600">
-                  {project.name}
-                </a>
-                <p className="text-gray-500">{project.members} Members</p>
+  return (
+    <ul className="mt-3 grid grid-cols-1 gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {Array.isArray(polls) && polls.map(poll => (
+        <li key={poll.id} className="col-span-1 flex shadow-sm rounded-md">
+          <div className="bg-pink-600 flex-shrink-0 flex items-center justify-center w-16 text-white text-sm font-medium rounded-l-md">
+            {nameToInitials(poll.ownerName)}
+          </div>
+          <div className="flex-1 px-4 py-2 text-sm truncate bg-white rounded-r-md truncate">
+            { /* eslint-disable */ }
+            <a href="#" className="text-gray-900 font-medium hover:text-gray-600">{poll.title}</a>
+            { /* eslint-enable */ }
+            <p>{poll.question}</p>
+            {Array.isArray(poll.options) && poll.options.map(opt => (
+              <div className="relative flex items-start" key={`${poll.id}_${opt.id}`}>
+                <div className="flex items-center h-5">
+                  <input id="comments" aria-describedby="comments-description" name="comments" type="checkbox"
+                         className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                </div>
+                <div className="ml-3 text-sm">
+                  <span id="comments-description" className="text-gray-500">{opt.text}</span>
+                </div>
               </div>
-              <div className="flex-shrink-0 pr-2">
-                <button
-                  type="button"
-                  className="w-8 h-8 bg-white inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  <span className="sr-only">Open options</span>
-                  <DotsVerticalIcon className="w-5 h-5" aria-hidden="true" />
-                </button>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-    )
-  }
+            ))}
+            <p className="text-gray-500">{poll.voteCount} responses</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
 }
+export default Polls;
