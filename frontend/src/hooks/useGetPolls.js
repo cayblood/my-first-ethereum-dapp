@@ -41,7 +41,6 @@ export const usePolls = () => {
           };
           for (let j = 0; j < newPoll.optionCount; j++) {
             const pollOption = await ethersContract.getPollOption(i, j);
-            // console.log('option', i, j, pollOption);
             const opt = {
               id: j,
               text: pollOption.option,
@@ -49,7 +48,6 @@ export const usePolls = () => {
               voted: pollOption.voted
             };
             const existingOption = newPoll.options.find(o => o.id === opt.id);
-            // console.log({existingOption: existingOption});
             if (!existingOption) {
               newPoll.options.push(opt);
             }
