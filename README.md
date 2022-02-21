@@ -21,7 +21,7 @@ Install [foundry](https://github.com/gakonst/foundry).
 
 ## Running tests
 
-```shell
+```text
 > forge test
 compiling...
 Compiling 3 files with 0.8.10
